@@ -1,0 +1,124 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Analytics Dashboard</title>
+    <script src="https://unpkg.com/htmx.org@2.0.3" integrity="sha384-0895/pl2MU10Hqc6jd4RvrthNlDiE9U1tWmX7WRESftEDRosgxNsQG/Ze9YMRzHq" crossorigin="anonymous"></script>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 text-gray-900">
+    <div class="container mx-auto p-6">
+        <h1 class="text-4xl font-bold mb-6">Analytics Dashboard</h1>
+
+
+
+        <!-- Filters -->
+        <div class="flex space-x-4 mb-6">
+            <form method="get" class="flex space-x-4">
+                <select name="category" class="border border-gray-300 rounded px-3 py-2">
+                    <option value="">Select Category</option>
+                    {% for category in categories %}
+                        <option value="{{ category }}" {% if request.GET.category == category %}selected{% endif %}>
+                            {{ category }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <select name="product" class="border border-gray-300 rounded px-3 py-2">
+                    <option value="">Select Product</option>
+                    {% for product in products %}
+                        <option value="{{ product }}" {% if request.GET.product == product %}selected{% endif %}>
+                            {{ product }}
+                        </option>
+                    {% endfor %}
+                </select>
+
+                <select name="gender" class="border border-gray-300 rounded px-3 py-2">
+                    <option value="">Select Gender</option>
+                    <option value="Male" {% if request.GET.gender == "Male" %}selected{% endif %}>Male</option>
+                    <option value="Female" {% if request.GET.gender == "Female" %}selected{% endif %}>Female</option>
+                </select>
+
+                <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Apply Filters</button>
+            </form>
+        </div>
+
+        <!--bar-->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mb-8">
+            <div class=" p-4 rounded">
+                <h2 class="text-xl font-bold mb-4">Category Distribution</h2>
+                <div class="">
+                    <p class="text-center " hx-get="/categories/" hx-trigger="load"  hx-target="#bar"></p>
+                    <div  id="bar" ></div>
+                </div>
+            </div>
+
+
+            <div class=" p-4 rounded">
+                <h2 class="text-xl font-bold mb-4">Payment Method Distribution</h2>
+                <div class="">
+                    <p class="text-center " hx-get="/payment-sector/" hx-trigger="load"  hx-target="#pie"></p>
+                    <div  id="pie" ></div>
+                </div>
+            </div>
+
+
+
+            <div class=" p-4 rounded">
+                <h2 class="text-xl font-bold mb-4">Gender Distribution</h2>
+                <div class="">
+                    <p class="text-center " hx-get="/gender-doughnut/" hx-trigger="load" hx-target="#dough"></p>
+                    <div  id="dough" ></div>
+                </div>
+            </div>
+
+            <div class=" p-4 rounded">
+                <h2 class="text-xl font-bold mb-4">Device Type Distribution</h2>
+                <div class="">
+                    <p class="text-center " hx-get="/device-types/" hx-trigger="load" hx-target="#device"></p>
+                    <div  id="device" ></div>
+                </div>
+            </div>
+
+
+
+            
+
+        </div>
+        
+
+       
+        <!-- Table -->
+        <div class="overflow-auto mb-6">
+            <table class="min-w-full bg-white border border-gray-300 rounded-lg shadow-md">
+                <thead class="bg-gray-200">
+                    <tr>
+                        <th class="px-4 py-2">Order Date</th>
+                        <th class="px-4 py-2">Product Category</th>
+                        <th class="px-4 py-2">Product</th>
+                        <th class="px-4 py-2">Sales</th>
+                        <th class="px-4 py-2">Profit</th>
+                        <th class="px-4 py-2">Quantity</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for order in orders %}
+                        <tr class="border-t border-gray-300">
+                            <td class="px-4 py-2">{{ order.order_date }}</td>
+                            <td class="px-4 py-2">{{ order.product_category }}</td>
+                            <td class="px-4 py-2">{{ order.product }}</td>
+                            <td class="px-4 py-2">{{ order.sales }}</td>
+                            <td class="px-4 py-2">{{ order.profit }}</td>
+                            <td class="px-4 py-2">{{ order.quantity }}</td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</body>
+</html>
